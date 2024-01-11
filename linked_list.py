@@ -7,42 +7,50 @@ class Node:
         self.pointer = pointer
 
 class LinkedList:
-    def __init__(self, size):
-        self.list = [Node(None, None)] * size
+    def __init__(self, length):
+        self.list = [Node(None, None) for i in range(length)]
         self.start = None
         self.nextfree = 0
 
-    def findfree():
-        for i, node in self.list:
-            if node.pointer == None:
+    def read(self):
+        for _ in self.list:
+            print(_.data, _.pointer)
+        
+    def findfree(self):
+        for i, node in enumerate(self.list):
+            if node.data == None:
                 return i
-        return False
-
-
+        return None
+    
     def insert(self, data):
-        if self.nextfree == False:
+        if self.nextfree == None:
             raise ListFullError("linked list is full")
-
-        if self.start == None:
-            self.list[0] = Node(data, 1)
+        
+        elif self.start == None:
+            self.start = 0
+            self.nextfree = 1
+            self.list[0] = Node(data, None)
 
         else:
             p = self.start
-            while True:
-                if not self.list[p].pointer == None:
-                    if data > self.list[self.list[p].pointer].data:
-                        p = self.list[p].pointer
-                    else:
+            if data < self.list[p].data:
+                self.start = self.nextfree
+                self.list[self.nextfree] = Node(data, p)
+                self.nextfree = self.findfree()
+
+            else:
+                while True:
+                    if self.list[p].pointer == None:
+                        if data >= self.list[p].data:
+                            previous = p
                         break
-                else:
-                    break
-        
-            temp = self.list[p].pointer
-            self.list[p].pointer = self.nextfree
-            self.list[self.nextfree] = Node(data, temp)
-            self.nextfree = self.findfree()
-
-a = LinkedList(5)
-
-# print(a.list[1].pointer)
-a.insert(8)
+                    
+                    if data >= self.list[p].data:
+                        previous = p
+                        p = self.list[p].pointer
+                
+                temp = self.list[previous].pointer
+                self.list[previous].pointer = self.nextfree
+                self.list[self.nextfree] = Node(data, temp)
+                self.nextfree = self.findfree()
+    
