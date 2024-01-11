@@ -1,6 +1,12 @@
 class ListFullError(Exception):
     pass
 
+class ListEmptyError(Exception):
+    pass
+
+class ValueNotFoundError(Exception):
+    pass
+
 class Node:
     def __init__(self, data, pointer):
         self.data = data
@@ -13,8 +19,19 @@ class LinkedList:
         self.nextfree = 0
 
     def read(self):
-        for _ in self.list:
-            print(_.data, _.pointer)
+        p = self.start
+        
+        if p == None:
+            return None
+        
+        orderedList = []
+        orderedList.append(self.list[p].data)
+        
+        while self.list[p].pointer != None:
+            p = self.list[p].pointer
+            orderedList.append(self.list[p].data)
+        
+        return orderedList
         
     def findfree(self):
         for i, node in enumerate(self.list):
@@ -48,9 +65,36 @@ class LinkedList:
                     if data >= self.list[p].data:
                         previous = p
                         p = self.list[p].pointer
+
+                    else:
+                        break
                 
                 temp = self.list[previous].pointer
                 self.list[previous].pointer = self.nextfree
                 self.list[self.nextfree] = Node(data, temp)
                 self.nextfree = self.findfree()
     
+    def delete(self, data):
+        if self.start == None:
+            raise ListEmptyError("linked list is empty")
+        
+        else:
+            p = self.start
+            
+            if self.list[p].data == data:
+                self.start = self.list[p].pointer
+                self.list[p].data, self.list[p].pointer = None, None
+                self.nextfree = self.findfree()
+            
+            else:
+                try:
+                    while self.list[self.list[p].pointer].data != data:
+                        p = self.list[p].pointer
+
+                    temp = self.list[self.list[p].pointer].pointer
+                    self.list[self.list[p].pointer].data, self.list[self.list[p].pointer].pointer = None, None
+                    self.list[p].pointer = temp
+                    self.nextfree = self.findfree()
+                
+                except TypeError:
+                    raise ValueNotFoundError("the value wasn't found in the linked list")

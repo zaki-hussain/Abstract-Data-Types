@@ -5,3 +5,4 @@ My Python implementations of the abstract data types (ADT) covered by the OCR A-
 
 Current ADTs include:
 - Queue (circular queue)
+- Linked list
